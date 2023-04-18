@@ -1,1 +1,1 @@
-"# GatorHarmonized" 
+"GatorHarmonized" 
