@@ -14,7 +14,7 @@ public:
         ifstream file(filename);
 
         if (!file) {
-            cerr << "Failed to open file: " << filename << endl;
+            cout << "Failed to open file: " << filename << endl;
             return;
         }
 
