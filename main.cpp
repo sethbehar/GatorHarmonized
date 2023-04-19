@@ -14,7 +14,7 @@ public:
         ifstream file(filename);
 
         if (!file) {
-            cout << "Failed to open file: " << filename << endl;
+            cerr << "Failed to open file: " << filename << endl;
             return;
         }
 
@@ -57,13 +57,15 @@ public:
     string familiarity;
     string hottness;
     string longitude;
+    string genre;
 
-    Artist(string id, string name, string familiarity, string hottness, string longitude) {
+    Artist(string id, string name, string familiarity, string hottness, string longitude, string genre) {
         this->id = id;
         this->name = name;
         this->familiarity = familiarity;
         this->hottness = hottness;
         this->longitude = longitude;
+        this->genre = genre;
     }
 
     void printArtist() {
@@ -72,6 +74,7 @@ public:
         cout << "Familiarity: " << familiarity << endl;
         cout << "Hottness: " << hottness << endl;
         cout << "Longitude: " << longitude << endl;
+        cout << "Genre: " << genre << endl;
     }
 
     string getId() { return id; }
@@ -89,17 +92,12 @@ int main() {
 
     for (int i = 0; i < csv.size(); i++) {
         // Create new artist object, only passing in the values -> id, name, familiarity, hottness, longitude
-        Artist artist(csv[i][2], csv[i][6], csv[i][0], csv[i][1], csv[i][5]);
+        Artist artist(csv[i][2], csv[i][6], csv[i][0], csv[i][1], csv[i][5], csv[i][8]);
         artists.push_back(artist);
     }
 
     for (int i = 0; i < artists.size(); i++) {
-        cout << "Artist " << i + 1 << ":" << endl;
-        cout << "ID: " << artists[i].getId() << endl;
-        cout << "Name: " << artists[i].getName() << endl;
-        cout << "Familiarity: " << artists[i].getFamiliarity() << endl;
-        cout << "Hotttnesss: " << artists[i].getHottness() << endl;
-        cout << "Longitude: " << artists[i].getLongitude() << endl;
+        artists[i].printArtist();
         cout << endl;
     }
 
