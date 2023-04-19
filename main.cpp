@@ -3,6 +3,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "Artist.h"
+#include "CSV.h"
 
 using namespace std;
 
@@ -24,3 +26,4 @@ int main() {
 
     return 0;
 }
+
