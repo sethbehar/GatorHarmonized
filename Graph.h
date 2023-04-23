@@ -94,7 +94,8 @@ public:
         int num_artists = artists.size();
         //Will store our final result.
         vector<string> result;
-
+        //Scores will contain the final scores.
+        vector<double> scores;
         //First, we need to find the starting index and the node to start at.
         int index = -1;
         for (int i = 0; i < artists.size(); i++) {
@@ -165,15 +166,10 @@ public:
 
         //And remember to keep only the top three artists
         if (result.size() > 3) {
-            for(int i = 0; i < result.size(); i++){
-                if(result[i] == artistName){
-                    result[i] = artistName;
-                }
-            }
-            //First step is to resize the
-            result.resize(100);
-            //Now make sure there are no duplicates after cutting down the size.
-            //We will use a set to track duplicate values.
+            //First step is to resize the vector
+            //No artist has over 20 songs in the database.
+            result.resize(20);
+            //Now make sure there are no duplicates after cutting down the size using a set.
             set<string> seen;
             //Return vector will hold our final values.
             vector<string> returnVec;
@@ -186,6 +182,96 @@ public:
             }
             result = returnVec;
             result.resize(3);
+        }
+        return result;
+    }
+
+    //Our next algorithm will be Prim's Algorithm.
+    vector<string> Prims(string artistName) {
+        //Result will hold our return vector.
+        vector<string> result;
+        //Find the index of the node containing the artistName, just like in Dijkstra's
+        int index = -1;
+        for (int i = 0; i < artists.size(); i++) {
+            if (artists[i].name == artistName) {
+                index = i;
+                break;
+            }
+        }
+        if (index == -1) {
+            //We will return the empty set if the artist does not exist within the graph, just like in Dijkstra's
+            return result;
+        }
+
+        //For the first step in Prims, we need to initialize the minimum spanning tree
+        //Every parent will be initialized to -1 since we haven't run the algorithm yet.
+        vector<int> parent(artists.size(), -1);
+        vector<double> key(artists.size(), INT_MAX);
+        //This will track which nodes have been pushed into the tree so far.
+        vector<bool> contained(artists.size(), false);
+
+        //First, the key of the starting node will be set to 0. The index variable holds the current position of our input.
+        key[index] = 0;
+
+        //Now begin building the tree using Prim's algorithm.
+        for (int i = 0; i < artists.size() - 1; i++) {
+            //Start by finding the node with the minimum key value that is not yet in the MST.
+            int minKeyIndex = -1;
+            double minKey = INT_MAX;
+            for (int j = 0; j < artists.size(); j++) {
+                //If the key is not yet in the MST and the key is less than the minimum key value...
+                if (!contained[j] && key[j] < minKey) {
+                    minKey = key[j];
+                    minKeyIndex = j;
+                }
+            }
+            //Make sure to change the nodes boolean value as well.
+            contained[minKeyIndex] = true;
+
+            //Now we can update adjacent node values.
+            for (int j = 0; j < artists.size(); j++) {
+                if (matrix[minKeyIndex][j] != 0 && !contained[j] && matrix[minKeyIndex][j] < key[j]) {
+                    parent[j] = minKeyIndex;
+                    key[j] = matrix[minKeyIndex][j];
+                }
+            }
+        }
+
+        //Fianlly, we can find the three closest nodes to the starting node in the MST.
+        vector<pair<int, double>> distances;
+        if (parent.empty() || parent.size() != artists.size()) {
+            //If the parent vector is empty or if something went wrong in calculation, return the empty set.
+            return result;
+        }
+
+        for (int i = 0; i < artists.size(); i++) {
+            //Now we check if parent[i] is a valid index, and that it is not the same as the artist's index.
+            if (i != index && parent[i] >= 0 && parent[i] < artists.size()) {
+                //Store distance between nodes.
+                double distance = 0;
+                //Set j = i.
+                int j = i;
+                //Now we also need to check if parent[j] is a valid index, and that it is not the same as the artist's index.
+                while (parent[j] != index && parent[j] >= 0 && parent[j] < artists.size()) {
+                    distance += matrix[parent[j]][j];
+                    j = parent[j];
+                }
+                if (parent[j] == index && j >= 0 && j < artists.size()) { // check if parent[j] is a valid index
+                    distance += matrix[index][j];
+                    distances.push_back(make_pair(i, distance));
+                }
+            }
+        }
+        //Now we can sort the elements of the distances vector based on the second value of each pair
+        sort(distances.begin(), distances.end(), [](const pair<int, double> &a, const pair<int, double> &b) {
+            // We are usign a simple lambda function that compares the second value of each pair a and b.
+            return a.second < b.second;
+            //This will return true if the distance in a is less than the distance in b
+        });
+
+        for (int i = 0; i < min((int) distances.size(), 3); i++) {
+            //cout << artists[distances[i].first].name << " (distance: " << distances[i].second << ")" << endl;
+            result.push_back(artists[distances[i].first].name);
         }
         return result;
     }
