@@ -6,14 +6,14 @@
 
 class AdjacencyMatrix {
 private:
-    std::vector<Artist> artists;
-    std::vector<std::vector<double>> matrix;
+    vector<Artist> artists;
+    vector<vector<double>> matrix;
 
 public:
-    AdjacencyMatrix(std::vector<Artist> artists) {
+    AdjacencyMatrix(vector<Artist> artists) {
         this->artists = artists;
         int num_artists = artists.size();
-        matrix.resize(num_artists, std::vector<double>(num_artists, 0.0));
+        matrix.resize(num_artists, vector<double>(num_artists, 0.0));
     }
 
     //This function populates our matrix with initial scores.
@@ -52,7 +52,7 @@ public:
             hotA1 = stof(A1.hottness);
             hotA2 = stof(A2.hottness);
         }
-        catch (const std::invalid_argument& e) {
+        catch (const invalid_argument& e) {
             //Handle the exceptions
             return 0;
         }
@@ -89,7 +89,7 @@ public:
     }
 
     //This is the Dijkstra's Algorithm function. It will return the 3 most similar artists to the artist input.
-    vector<string> Dijkstra(string artistName){
+    vector<string> Dijkstra(string artistName) {
         //Stores the number of artists in the matrix.
         int num_artists = artists.size();
         //Will store our final result.
@@ -104,7 +104,7 @@ public:
                 break;
             }
         }
-        if(index == -1) {
+        if (index == -1) {
             //We will return the empty set if the artist does not exist within the graph.
             return result;
         }
@@ -112,9 +112,9 @@ public:
         //For the next step of Dijkstra's we must initialize the distance and visited vectors
         int size = matrix.size();
         //Use the limits class to set each distance to "infinity" as taught in lecture.
-        std::vector<double> dist(size, numeric_limits<double>::max());
+        vector<double> dist(size, numeric_limits<double>::max());
         //Default all visited to false, as no nodes have been visited yet,
-        std::vector<bool> visited(size, false);
+        vector<bool> visited(size, false);
 
         //Set distance of starting node to 0
         dist[index] = 0.0;
@@ -162,7 +162,7 @@ public:
             int index_a = find_if(artists.begin(), artists.end(), [&](const Artist& artist) { return artist.name == a; }) - artists.begin();
             int index_b = find_if(artists.begin(), artists.end(), [&](const Artist& artist) { return artist.name == b; }) - artists.begin();
             return dist[index_a] < dist[index_b];
-        });
+            });
 
         //And remember to keep only the top three artists
         if (result.size() > 3) {
@@ -173,9 +173,9 @@ public:
             set<string> seen;
             //Return vector will hold our final values.
             vector<string> returnVec;
-            for(string name : result){
+            for (string name : result) {
                 //If we have not seen the name, add it to the set and the vector.
-                if(seen.count(name) == 0 && name != artistName){
+                if (seen.count(name) == 0 && name != artistName) {
                     seen.insert(name);
                     returnVec.push_back(name);
                 }
@@ -263,13 +263,13 @@ public:
             }
         }
         //Now we can sort the elements of the distances vector based on the second value of each pair
-        sort(distances.begin(), distances.end(), [](const pair<int, double> &a, const pair<int, double> &b) {
+        sort(distances.begin(), distances.end(), [](const pair<int, double>& a, const pair<int, double>& b) {
             // We are usign a simple lambda function that compares the second value of each pair a and b.
             return a.second < b.second;
             //This will return true if the distance in a is less than the distance in b
-        });
+            });
 
-        for (int i = 0; i < min((int) distances.size(), 3); i++) {
+        for (int i = 0; i < min((int)distances.size(), 3); i++) {
             //cout << artists[distances[i].first].name << " (distance: " << distances[i].second << ")" << endl;
             result.push_back(artists[distances[i].first].name);
         }
