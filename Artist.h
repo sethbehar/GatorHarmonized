@@ -1,6 +1,3 @@
-//
-// Created by jakem on 4/19/2023.
-//
 #ifndef GATORHARMONIZED_ARTIST_H
 #define GATORHARMONIZED_ARTIST_H
 
