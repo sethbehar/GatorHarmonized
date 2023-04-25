@@ -1,3 +1,8 @@
+#include "Artist.h"
+#include "Graph.h"
+#include "CSV.h"
+
+int main() {
     //COP3530 Final Prject: "Gator Harmonized!"
     //By: Jacob Moss, Seth Behar, Daniel Wajsbrot.
 
@@ -37,3 +42,4 @@
         std::cout << s << " ";
     }
     return 0;
+}
