@@ -3,6 +3,7 @@
 #include "Artist.h"
 #include <limits>
 #include <algorithm>
+#include <queue>
 
 class AdjacencyMatrix {
 private:
@@ -270,9 +271,74 @@ public:
             });
 
         for (int i = 0; i < min((int)distances.size(), 3); i++) {
-            //cout << artists[distances[i].first].name << " (distance: " << distances[i].second << ")" << endl;
+            cout << artists[distances[i].first].name << " (distance: " << distances[i].second << ")" << endl;
             result.push_back(artists[distances[i].first].name);
         }
         return result;
     }
+
+    vector<string> BFS(string artistName) {
+        int num_artists = artists.size();
+        vector<string> result;
+        vector<double> scores;
+        int index = -1;
+        for (int i = 0; i < artists.size(); i++) {
+            if (artists[i].name == artistName) {
+                index = i;
+                break;
+            }
+        }
+        if (index == -1) {
+            return result;
+        }
+
+        // Use sets to keep track of visited nodes and artist names
+        set<int> visited_nodes;
+        set<string> visited_artists;
+        visited_nodes.insert(index);
+        visited_artists.insert(artistName);
+
+        // Use a queue to keep track of nodes to visit
+        queue<int> q;
+        q.push(index);
+
+        // BFS loop
+        while (!q.empty()) {
+            int current = q.front();
+            q.pop();
+
+            // Visit each neighbor of the current node
+            for (int i = 0; i < num_artists; i++) {
+                if (matrix[current][i] > 0 && visited_nodes.count(i) == 0) {
+                    // Compute similarity score and add to results
+                    double score = computeSimilarityScore(artists[current], artists[i]);
+                    if (result.size() < 3) {
+                        // Add to results if we have less than 3 results
+                        if (visited_artists.count(artists[i].name) == 0) {
+                            result.push_back(artists[i].name);
+                            scores.push_back(score);
+                            visited_artists.insert(artists[i].name);
+                        }
+                    }
+                    else {
+                        // If we have 3 results, replace the lowest score if the new score is higher
+                        int min_index = min_element(scores.begin(), scores.end()) - scores.begin();
+                        if (score > scores[min_index] && visited_artists.count(artists[i].name) == 0) {
+                            result[min_index] = artists[i].name;
+                            scores[min_index] = score;
+                            visited_artists.insert(artists[i].name);
+                        }
+                    }
+
+                    // Mark the neighbor as visited and add to queue
+                    visited_nodes.insert(i);
+                    q.push(i);
+                }
+            }
+        }
+
+        return result;
+    }
+
+
 };
