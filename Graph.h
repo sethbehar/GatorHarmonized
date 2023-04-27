@@ -277,10 +277,17 @@ public:
         return result;
     }
 
+    //BFS will be run on our Adjacency Matrix
     vector<string> BFS(string artistName) {
+
+        //Store the number of artists. 
         int num_artists = artists.size();
+        //Will store the final result
         vector<string> result;
+        //Stores artist scores. 
         vector<double> scores;
+
+        //First we will find the index of our artist name
         int index = -1;
         for (int i = 0; i < artists.size(); i++) {
             if (artists[i].name == artistName) {
@@ -288,40 +295,47 @@ public:
                 break;
             }
         }
-        if (index == -1) {
+        if (index == -1) { //Default case, artist doesn't exist. 
+            for (int i = 0; i < 3; i++) {
+                result.push_back(""); 
+            }
             return result;
         }
 
-        // Use sets to keep track of visited nodes and artist names
+        //We will use a set to keep track of visited nodes and names
         set<int> visited_nodes;
+        //Store names.
         set<string> visited_artists;
+        //Insert our artist name and index. 
         visited_nodes.insert(index);
         visited_artists.insert(artistName);
 
-        // Use a queue to keep track of nodes to visit
-        queue<int> q;
-        q.push(index);
+        //Instantiate the queue. 
+        queue<int> BFS_queue;
+        BFS_queue.push(index);
 
-        // BFS loop
-        while (!q.empty()) {
-            int current = q.front();
-            q.pop();
+        //Now run the breadth first search
+        while (!BFS_queue.empty()) {
 
-            // Visit each neighbor of the current node
+            //Tracker will store our current position. 
+            int tracker = BFS_queue.front();
+            BFS_queue.pop();
+
+            //Visit each neighbor of the current node
             for (int i = 0; i < num_artists; i++) {
                 if (matrix[current][i] > 0 && visited_nodes.count(i) == 0) {
-                    // Compute similarity score and add to results
+                    //Now compute the similarity scores
                     double score = computeSimilarityScore(artists[current], artists[i]);
                     if (result.size() < 3) {
-                        // Add to results if we have less than 3 results
+                        //Only 3 nodes are allowed. 
                         if (visited_artists.count(artists[i].name) == 0) {
                             result.push_back(artists[i].name);
                             scores.push_back(score);
                             visited_artists.insert(artists[i].name);
                         }
                     }
-                    else {
-                        // If we have 3 results, replace the lowest score if the new score is higher
+                    else { //If we have 3 results, we need to replace the lowest score if the new score is higher.
+                        //min_element will find the minimum element in our scores vector. 
                         int min_index = min_element(scores.begin(), scores.end()) - scores.begin();
                         if (score > scores[min_index] && visited_artists.count(artists[i].name) == 0) {
                             result[min_index] = artists[i].name;
@@ -329,10 +343,9 @@ public:
                             visited_artists.insert(artists[i].name);
                         }
                     }
-
-                    // Mark the neighbor as visited and add to queue
+                    //Lastly, we have visited the neighbor so mark it that way. 
                     visited_nodes.insert(i);
-                    q.push(i);
+                    BFS_queue.push(i);
                 }
             }
         }
