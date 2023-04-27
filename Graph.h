@@ -323,9 +323,9 @@ public:
 
             //Visit each neighbor of the current node
             for (int i = 0; i < num_artists; i++) {
-                if (matrix[current][i] > 0 && visited_nodes.count(i) == 0) {
+                if (matrix[tracker][i] > 0 && visited_nodes.count(i) == 0) {
                     //Now compute the similarity scores
-                    double score = computeSimilarityScore(artists[current], artists[i]);
+                    float score = computeSimilarityScore(artists[tracker], artists[i]);
                     if (result.size() < 3) {
                         //Only 3 nodes are allowed. 
                         if (visited_artists.count(artists[i].name) == 0) {
