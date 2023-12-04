@@ -11,3 +11,5 @@ To create this project, we utilized a GUI (Graphical User Interface) to represen
 Additionally, we used a CSV (Comma Separated Values) file with over 10,000 unique artists. This allowed us to create an adjacency matrix with over 100,000,000 nodes, representing the connections between each artist and their similarity scores. This large dataset required significant computational power and memory to process, which we were able to achieve through optimized algorithms and efficient data structures.
 
 Overall, GatorHarmonized is a powerful tool for discovering new music and expanding one's musical horizons. With its advanced algorithms and extensive dataset, it provides users with a personalized and unique music discovery experience.
+
+Please watch our YouTube description for more: https://www.youtube.com/watch?v=y7_C8iGFN6I&ab_channel=JakeMoss
